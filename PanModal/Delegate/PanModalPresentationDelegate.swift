@@ -5,7 +5,6 @@
 //  Copyright © 2019 Tiny Speck, Inc. All rights reserved.
 //
 
-#if os(iOS)
 import UIKit
 
 /**
@@ -59,7 +58,13 @@ extension PanModalPresentationDelegate: UIViewControllerTransitioningDelegate {
 
 }
 
-extension PanModalPresentationDelegate: UIAdaptivePresentationControllerDelegate, UIPopoverPresentationControllerDelegate {
+#if os(iOS)
+extension PanModalPresentationDelegate: UIPopoverPresentationControllerDelegate {
+    
+}
+#endif
+
+extension PanModalPresentationDelegate: UIAdaptivePresentationControllerDelegate {
 
     /**
      - Note: We do not adapt to size classes due to the introduction of the UIPresentationController
@@ -76,6 +81,4 @@ extension PanModalPresentationDelegate: UIAdaptivePresentationControllerDelegate
     public func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
         return .none
     }
-
 }
-#endif

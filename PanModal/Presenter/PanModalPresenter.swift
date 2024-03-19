@@ -5,7 +5,6 @@
 //  Copyright © 2019 Tiny Speck, Inc. All rights reserved.
 //
 
-#if os(iOS)
 import UIKit
 
 /**
@@ -35,4 +34,3 @@ protocol PanModalPresenter: AnyObject {
                          completion: (() -> Void)?)
 
 }
-#endif

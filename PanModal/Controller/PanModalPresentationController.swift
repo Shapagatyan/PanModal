@@ -5,7 +5,6 @@
 //  Copyright © 2019 Tiny Speck, Inc. All rights reserved.
 //
 
-#if os(iOS)
 import UIKit
 
 /**
@@ -148,6 +147,7 @@ open class PanModalPresentationController: UIPresentationController {
 
     // MARK: - Gesture Recognizers
 
+    #if os(iOS)
     /**
      Gesture recognizer to detect & track pan gestures
      */
@@ -158,6 +158,7 @@ open class PanModalPresentationController: UIPresentationController {
         gesture.delegate = self
         return gesture
     }()
+    #endif
 
     // MARK: - Deinitializers
 
@@ -188,7 +189,9 @@ open class PanModalPresentationController: UIPresentationController {
 
         coordinator.animate(alongsideTransition: { [weak self] _ in
             self?.backgroundView.dimState = .max
-            self?.presentedViewController.setNeedsStatusBarAppearanceUpdate()
+            #if os(iOS)
+                self?.presentedViewController.setNeedsStatusBarAppearanceUpdate()
+            #endif
         })
     }
 
@@ -213,7 +216,9 @@ open class PanModalPresentationController: UIPresentationController {
         coordinator.animate(alongsideTransition: { [weak self] _ in
             self?.dragIndicatorView.alpha = 0.0
             self?.backgroundView.dimState = .off
-            self?.presentingViewController.setNeedsStatusBarAppearanceUpdate()
+            #if os(iOS)
+                self?.presentingViewController.setNeedsStatusBarAppearanceUpdate()
+            #endif
         })
     }
 
@@ -345,7 +350,9 @@ private extension PanModalPresentationController {
          in the presentation animator instead of here
          */
         containerView.addSubview(presentedView)
-        containerView.addGestureRecognizer(panGestureRecognizer)
+        #if os(iOS)
+            containerView.addGestureRecognizer(panGestureRecognizer)
+        #endif
 
         if presentable.showDragIndicator {
             addDragIndicatorView(to: presentedView)
@@ -454,7 +461,11 @@ private extension PanModalPresentationController {
          Set the appropriate contentInset as the configuration within this class
          offsets it
          */
-        scrollView.contentInset.bottom = presentingViewController.bottomLayoutGuide.length
+        if #available(iOS 11, *) {
+            scrollView.contentInset.bottom = presentingViewController.view.safeAreaInsets.bottom
+        } else {
+            scrollView.contentInset.bottom = presentingViewController.bottomLayoutGuide.length
+        }
 
         /**
          As we adjust the bounds during `handleScrollViewTopBounce`
@@ -889,4 +900,3 @@ private extension UIScrollView {
         return isDragging && !isDecelerating || isTracking
     }
 }
-#endif

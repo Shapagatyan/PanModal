@@ -5,7 +5,6 @@
 //  Copyright © 2019 Tiny Speck, Inc. All rights reserved.
 //
 
-#if os(iOS)
 import UIKit
 
 /**
@@ -48,6 +47,7 @@ extension UIViewController: PanModalPresenter {
          Here, we deliberately do not check for size classes. More info in `PanModalPresentationDelegate`
          */
 
+        #if os(iOS)
         if UIDevice.current.userInterfaceIdiom == .pad {
             viewControllerToPresent.modalPresentationStyle = .popover
             viewControllerToPresent.popoverPresentationController?.sourceRect = sourceRect
@@ -58,9 +58,12 @@ extension UIViewController: PanModalPresenter {
             viewControllerToPresent.modalPresentationCapturesStatusBarAppearance = true
             viewControllerToPresent.transitioningDelegate = PanModalPresentationDelegate.default
         }
+        #elseif os(tvOS)
+        viewControllerToPresent.modalPresentationStyle = .custom
+        viewControllerToPresent.transitioningDelegate = PanModalPresentationDelegate.default
+        #endif
 
         present(viewControllerToPresent, animated: true, completion: completion)
     }
 
 }
-#endif
